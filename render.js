@@ -30,10 +30,7 @@ async function main() {
         body: body.replaceAll(
             'G.Buffer.from(re,"base64")',
             "G.Buffer.from(re, \"base64\");fetch('http://localhost:3000/authHeader', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ authHeader: this.authHeader, challenge: this.challenge, index: this.index, key: this.key }) }).then((response) => response.json()).then((data) => console.log('Response from server:', data)).catch((error) => console.error('Error sending request:', error));      "
-          ).replaceAll(
-            "xn.digest(\"base64\");", 
-            "xn.digest(\"base64\");Ee = Ee.append(\"Challenge\", rn.challenge);Ee = Ee.append(\"Endpoint\", Tt);Ee = Ee.append(\"An\", An);Ee = Ee.append(\"Body\", ze);Ee = Ee.append(\"Key\", rn.key);"
-        )
+          )
       };
     },
   });
@@ -57,7 +54,7 @@ async function main() {
       .click();
   });
 
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(3000);
 
   try {
     // Fill in the username and password

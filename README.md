@@ -19,3 +19,7 @@ BASE_PAGE = https://YOUR_PAGE
 `npm run all` - should start everything
 
 PS: Happy hacking :)
+
+
+### How does it work?
+![Diagram of project](image.png)
