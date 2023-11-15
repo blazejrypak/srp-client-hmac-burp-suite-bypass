@@ -12,17 +12,17 @@ let browser, page, client;
 app.get('/start', async (req, res) => {
   browser = await puppeteer.launch({
     headless: false,
-    slowMo: 150,
+    // slowMo: 150,
     defaultViewport: null,
     ignoreHTTPSErrors: true,
-    args: ["--disable-web-security", `--proxy-server=${process.env.PROXY_SERVER}`, '--disable-dev-shm-usage'],
+    args: ["--disable-web-security", `--proxy-server=${process.env.PROXY_SERVER}`, '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox', '--unlimited-storage', '--full-memory-crash-report'],
   });
-  page = await browser.newPage();
-  client = await page.target().createCDPSession();
   res.end('Browser started');
 });
 
 app.get('/run', async (req, res) => {
+  page = await browser.newPage();
+  client = await page.target().createCDPSession();
   const interceptManager = new RequestInterceptionManager(client);
 
   await interceptManager.intercept({
@@ -45,7 +45,7 @@ app.get('/run', async (req, res) => {
   await page.waitForSelector("form.tb-form2");
 
   // Fill in the username and password
-  await page.type('input[aria-label="Číslo klienta"]', "59862110");
+  await page.type('input[aria-label="Číslo klienta"]', "50959551");
   await page.type('input[aria-label="Heslo"]', "heslo123");
 
   // Click the login button
@@ -58,7 +58,7 @@ app.get('/run', async (req, res) => {
       .click();
   });
 
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(1500);
 
   try {
     // Fill in the username and password
@@ -73,10 +73,20 @@ app.get('/run', async (req, res) => {
       .shadowRoot.querySelector("button")
       .click();
   });
+  
+  await page.waitForTimeout(1500);
+
+  await page.evaluate(() => {
+    document.querySelector("#tb-application > tb-app > ng-component > div > div > div > ng-component > div > div > div > form > tb-button:nth-child(3)").shadowRoot.querySelector("button").click();
+  });
   } catch (e) {
     console.log(e)
   }
   res.end('Bypass ended');
 })
+
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500).json(response.error(err.status || 500));
+});
 
 app.listen(5173)
