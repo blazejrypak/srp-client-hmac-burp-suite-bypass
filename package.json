@@ -19,6 +19,7 @@
     "node": "^21.1.0",
     "puppeteer": "^21.4.1",
     "puppeteer-intercept-and-modify-requests": "^1.2.2",
+    "secure-remote-password": "^0.3.1",
     "selenium-webdriver": "^4.14.0"
   },
   "devDependencies": {

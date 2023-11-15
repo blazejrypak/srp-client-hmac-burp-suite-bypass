@@ -4,21 +4,25 @@ const {
   RequestInterceptionManager,
 } = require("puppeteer-intercept-and-modify-requests");
 
-async function main() {
-  const browser = await puppeteer.launch({
+const express = require('express');
+const app = express();
+
+let browser, page, client;
+
+app.get('/start', async (req, res) => {
+  browser = await puppeteer.launch({
     headless: false,
     slowMo: 150,
     defaultViewport: null,
     ignoreHTTPSErrors: true,
-    args: ["--disable-web-security", `--proxy-server=${process.env.PROXY_SERVER}`],
+    args: ["--disable-web-security", `--proxy-server=${process.env.PROXY_SERVER}`, '--disable-dev-shm-usage'],
   });
-  const page = await browser.newPage();
+  page = await browser.newPage();
+  client = await page.target().createCDPSession();
+  res.end('Browser started');
+});
 
-  // assuming 'page' is your Puppeteer page object
-  const client = await page.target().createCDPSession();
-  // note: if you want to intercept requests on ALL tabs, instead use:
-  // const client = await browser.target().createCDPSession()
-
+app.get('/run', async (req, res) => {
   const interceptManager = new RequestInterceptionManager(client);
 
   await interceptManager.intercept({
@@ -41,7 +45,7 @@ async function main() {
   await page.waitForSelector("form.tb-form2");
 
   // Fill in the username and password
-  await page.type('input[aria-label="Číslo klienta"]', "58166446");
+  await page.type('input[aria-label="Číslo klienta"]', "59862110");
   await page.type('input[aria-label="Heslo"]', "heslo123");
 
   // Click the login button
@@ -72,6 +76,7 @@ async function main() {
   } catch (e) {
     console.log(e)
   }
-}
+  res.end('Bypass ended');
+})
 
-main();
+app.listen(5173)
