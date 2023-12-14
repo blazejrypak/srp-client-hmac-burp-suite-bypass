@@ -49,6 +49,6 @@ async function main() {
   
   
   
-  await page.goto('https://win2day.at');
+  await page.goto('URL');
 }
 main();
